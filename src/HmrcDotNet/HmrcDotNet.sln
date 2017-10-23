@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HmrcDotNet", "HmrcDotNet.csproj", "{583DB241-0624-4382-8079-4FE91C4970EE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{D070E03C-1DA4-414D-81EE-28100A5C8746}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HmrcDotNet.Web", "..\HmrcDotNet.Web\HmrcDotNet.Web.csproj", "{2A674A47-C150-40F1-AB59-444351B22506}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +19,16 @@ Global
 		{583DB241-0624-4382-8079-4FE91C4970EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{583DB241-0624-4382-8079-4FE91C4970EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{583DB241-0624-4382-8079-4FE91C4970EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A674A47-C150-40F1-AB59-444351B22506}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A674A47-C150-40F1-AB59-444351B22506}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A674A47-C150-40F1-AB59-444351B22506}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A674A47-C150-40F1-AB59-444351B22506}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2A674A47-C150-40F1-AB59-444351B22506} = {D070E03C-1DA4-414D-81EE-28100A5C8746}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DB0CEC3D-555E-4AC1-84F0-2A51A847CAE2}
