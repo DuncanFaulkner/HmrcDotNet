@@ -34,10 +34,11 @@ namespace HmrcDotNet.Web
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
+           
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IIndividualDataService,IndividualDataService>();
+            services.AddTransient<ICommonDataService,CommonDataService>();
             services.Configure<HmrcSettings>(Configuration.GetSection("HmrcSettings"));
             services.AddMvc();
         }
@@ -57,9 +58,9 @@ namespace HmrcDotNet.Web
             }
 
             app.UseStaticFiles();
-
+            
             app.UseAuthentication();
-
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

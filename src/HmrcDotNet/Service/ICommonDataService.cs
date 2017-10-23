@@ -4,6 +4,7 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using HmrcDotNet.Auth;
@@ -19,6 +20,8 @@ namespace HmrcDotNet.Service
     {
         Task<ServiceResponse<T>> CallApiAsync<T>(string query, string content, HttpRequestType httpRequestType);
         Task<ServiceResponse<T>> CallApiAsync<T>(string query, HttpRequestType httpRequestType);
+        void SetToken(string token);
+        Task<ServiceResponse<AuthToken>> ExchangeToken(string state, string code, string realmId);
     }
 
     public class CommonDataService : ICommonDataService
@@ -28,8 +31,8 @@ namespace HmrcDotNet.Service
         public CommonDataService(IOptions<HmrcSettings> hmrcSettings)
         {
             _hmrcSettings = hmrcSettings.Value;
-            _token = "TODO";
         }
+
 
         public async Task<ServiceResponse<T>> CallApiAsync<T>(string query, string content, HttpRequestType httpRequestType)
         {
@@ -87,6 +90,69 @@ namespace HmrcDotNet.Service
         public async Task<ServiceResponse<T>> CallApiAsync<T>(string query, HttpRequestType httpRequestType)
         {
             return await CallApiAsync<T>(query, "", httpRequestType);
+        }
+
+        public void SetToken(string token)
+        {
+            //TODO probably change how this is done.
+            _token = token;
+        }
+
+        public async Task<ServiceResponse<AuthToken>> ExchangeToken(string state, string code, string realmId)
+        {
+            var response = new ServiceResponse();
+
+            var tokenRequestParameters = new Dictionary<string, string>()
+            {
+                {"client_id", _hmrcSettings.ClientId},
+                {"redirect_uri", _hmrcSettings.CallbackUrl},
+                {"client_secret", _hmrcSettings.ClientSecretId},
+                {"code", code},
+                {"grant_type", "authorization_code"},
+            };
+            return await CallAuthApi(Guid.Parse(state), realmId, tokenRequestParameters);
+        }
+
+        public async Task<ServiceResponse<AuthToken>> CallAuthApi(Guid id, string realmId, Dictionary<string, string> submissionModel)
+        {
+            var response = new ServiceResponse<AuthToken>() { Data = new AuthToken() };
+
+            var url = _hmrcSettings.TokenUrl;
+
+            var requestContent = new FormUrlEncodedContent(submissionModel);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, url);
+            requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            requestMessage.Content = requestContent;
+
+            using (var client = new HttpClient())
+            {
+                client.MaxResponseContentBufferSize = 1024 * 1024 * 10;
+                client.DefaultRequestHeaders.Connection.Add("keep-alive");
+                var clientResponse = await client.SendAsync(requestMessage);
+                if (clientResponse.StatusCode == HttpStatusCode.OK)
+                {
+                    var responseObj = await clientResponse.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<ResponseExchangeToken>(responseObj);
+
+                    var authToken = new AuthToken();
+                    
+                    authToken.IndividualId = id;
+                    authToken.AccessToken = result.access_token;
+                    authToken.RefreshToken = result.refresh_token;
+                    authToken.TokenExpiration = DateTime.UtcNow.AddSeconds(result.expires_in);
+                    authToken.RefreshTokenExpiration = DateTime.UtcNow.AddSeconds(result.x_refresh_token_expires_in);
+
+                    response.Data = authToken;
+                    
+                }
+                else
+                {
+                    response.AddError("HMRC", "There was an issue with connecting to HMRC");
+                }
+            }
+
+
+            return response;
         }
     }
 }

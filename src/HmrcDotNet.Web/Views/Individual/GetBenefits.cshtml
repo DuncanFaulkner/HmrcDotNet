@@ -1,0 +1,34 @@
+﻿@model HmrcDotNet.Model.IndividualBenefits
+
+<table id="table">
+    <thead>
+    <tr>
+        <th>Accom</th>
+        <th>Company Car</th>
+        <th>Employer</th>
+        <th>Expense</th>
+        <th>Fuel</th>
+        <th>Goods</th>
+        <th>Other</th>
+        <th>PrivateMed</th>
+        <th>Voucher</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Employments)
+    {
+        <tr>
+            <td>@item.AccommodationProvidedByEmployer</td>
+            <td>@item.CompanyCarsAndVansBenefit</td>
+            <td>@item.EmployerPayeReference</td>
+            <td>@item.ExpensesPaymentsReceived</td>
+            <td>@item.FuelForCompanyCarsAndVansBenefit</td>
+            <td>@item.GoodsEtcProvidedByEmployer</td>
+            <td>@item.OtherBenefits</td>
+            <td>@item.PrivateMedicalDentalInsurance</td>
+            <td>@item.VouchersCreditCardsExcessMileageAllowance</td>
+        </tr>
+    }
+    </tbody>
+
+</table>

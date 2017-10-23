@@ -20,12 +20,13 @@ namespace HmrcDotNet.Service
         Task<ServiceResponse<MarriageAllowanceStatus>> GetMarriageAllowanceStatusAsync(string utr);
         Task<ServiceResponse<NationalInsurance>> GetNationalInsuranceAsync(string utr, string taxYear);
         Task<ServiceResponse<ReliefAtSource>> GetReliefAtSourceAsync(string customeruuid);
+        void SetToken(string token);
     }
 
     public class IndividualDataService : IIndividualDataService
     {
         private ICommonDataService _commonDataService;
-
+        private string _token;
         public IndividualDataService(ICommonDataService commonDataService)
         {
             _commonDataService = commonDataService;
@@ -44,6 +45,7 @@ namespace HmrcDotNet.Service
         }
         public async Task<ServiceResponse<IndividualEmployments>> GetIndividualEmploymentsAsync(string utr, string taxYear)
         {
+            var test = _token;
             var response = new ServiceResponse<IndividualEmployments>(){ Data = new IndividualEmployments()}; 
             ValidateUtRandTaxYear(utr, taxYear, response);
             if (!response.IsValid)
@@ -150,6 +152,12 @@ namespace HmrcDotNet.Service
                 response = await _commonDataService.CallApiAsync<ReliefAtSource>($"/relief-at-source/customer/{customeruuid}/residency-status", HttpRequestType.Get);
             }
             return response;
+        }
+
+        public void SetToken(string token)
+        {
+            _token = token;
+            _commonDataService.SetToken(token);
         }
 
         private static void ValidateUtRandTaxYear(string utr, string taxYear, ServiceResponse response)

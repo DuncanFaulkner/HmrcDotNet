@@ -12,5 +12,7 @@ namespace HmrcDotNet.Auth
         public string ClientId { get; set; }
         public string ClientSecretId { get; set; }
         public string ServerToken { get; set; }
+        public string CallbackUrl { get; set; }
+        public string TokenUrl { get; set; } //https://api.service.hmrc.gov.uk/oauth/token
     }
 }
