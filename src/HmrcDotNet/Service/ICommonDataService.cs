@@ -22,6 +22,7 @@ namespace HmrcDotNet.Service
         Task<ServiceResponse<T>> CallApiAsync<T>(string query, HttpRequestType httpRequestType);
         void SetToken(string token);
         Task<ServiceResponse<AuthToken>> ExchangeToken(string state, string code);
+        Task<ServiceResponse<UserInfo>> UserInfo();
     }
 
     public class CommonDataService : ICommonDataService
@@ -111,6 +112,13 @@ namespace HmrcDotNet.Service
                 {"grant_type", "authorization_code"},
             };
             return await CallAuthApi(Guid.Parse(state),  tokenRequestParameters);
+        }
+
+        public async Task<ServiceResponse<UserInfo>> UserInfo()
+        {
+            var response = new ServiceResponse<UserInfo>(){Data = new UserInfo()};
+            response = await CallApiAsync<UserInfo>($"oauth/userinfo", HttpRequestType.Get);
+            return response;
         }
 
         public async Task<ServiceResponse<AuthToken>> CallAuthApi(Guid id,  Dictionary<string, string> submissionModel)

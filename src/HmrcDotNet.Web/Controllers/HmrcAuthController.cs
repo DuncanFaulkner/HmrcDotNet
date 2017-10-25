@@ -44,6 +44,8 @@ namespace HmrcDotNet.Web.Controllers
                 //TODO encrypt
                 individual.AuthJsonPayLoad = JsonConvert.SerializeObject(response.Data);
                 await _applicationDbContext.SaveChangesAsync();
+                _commonDataService.SetToken(response.Data.AccessToken);
+                await _commonDataService.UserInfo();
             }
 
 
