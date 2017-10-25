@@ -1,0 +1,31 @@
+﻿@model List<HmrcDotNet.Web.Data.Model.Individual>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <td>UTR</td>
+            <td>Connect</td>
+            <td>Action</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var individual in Model)
+        {
+            <tr>
+                <td>@individual.IndividualName</td>
+                <td>@individual.SaUTR</td>
+                <td><a href="@Url.Action("Connect","HmrcAuth",new {id = @individual.IndividualId})">Connect</a></td>
+                @if (string.IsNullOrWhiteSpace(individual.AuthJsonPayLoad))
+                {
+                    <td>You need to connect first</td>
+                }
+                else
+                {
+                    <td><a href="@Url.Action("GetBenefits", "Individual", new {id = @individual.IndividualId ,utr = @individual.SaUTR, taxYear = "2017-18"})">GetBenefit</a></td>
+                }
+            </tr>
+
+        }
+    </tbody>
+</table>

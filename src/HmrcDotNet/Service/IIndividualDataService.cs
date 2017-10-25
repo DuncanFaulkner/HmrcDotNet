@@ -37,7 +37,7 @@ namespace HmrcDotNet.Service
             var response = new ServiceResponse<IndividualBenefits>(){Data = new IndividualBenefits()};
            
             ValidateUtRandTaxYear(utr, taxYear, response);
-            if (!response.IsValid)
+            if (response.IsValid)
             {
                 response = await _commonDataService.CallApiAsync<IndividualBenefits>($"/individual-benefits/sa/{utr}/annual-summary/{taxYear}",  HttpRequestType.Get);
             }

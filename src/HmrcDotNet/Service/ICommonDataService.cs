@@ -21,7 +21,7 @@ namespace HmrcDotNet.Service
         Task<ServiceResponse<T>> CallApiAsync<T>(string query, string content, HttpRequestType httpRequestType);
         Task<ServiceResponse<T>> CallApiAsync<T>(string query, HttpRequestType httpRequestType);
         void SetToken(string token);
-        Task<ServiceResponse<AuthToken>> ExchangeToken(string state, string code, string realmId);
+        Task<ServiceResponse<AuthToken>> ExchangeToken(string state, string code);
     }
 
     public class CommonDataService : ICommonDataService
@@ -41,7 +41,7 @@ namespace HmrcDotNet.Service
 
             var url = _hmrcSettings.BaseUrl + query;
             var httpContent = new StringContent(content, Encoding.UTF8, "application/text");
-            var accept = "application/json";
+            var accept = "application/vnd.hmrc.1.0+json";
             var client = url.WithHeaders(new
             {
                 Accept = accept,
@@ -98,7 +98,7 @@ namespace HmrcDotNet.Service
             _token = token;
         }
 
-        public async Task<ServiceResponse<AuthToken>> ExchangeToken(string state, string code, string realmId)
+        public async Task<ServiceResponse<AuthToken>> ExchangeToken(string state, string code)
         {
             var response = new ServiceResponse();
 
@@ -106,18 +106,18 @@ namespace HmrcDotNet.Service
             {
                 {"client_id", _hmrcSettings.ClientId},
                 {"redirect_uri", _hmrcSettings.CallbackUrl},
-                {"client_secret", _hmrcSettings.ClientSecretId},
+                {"client_secret", _hmrcSettings.ClientSecret},
                 {"code", code},
                 {"grant_type", "authorization_code"},
             };
-            return await CallAuthApi(Guid.Parse(state), realmId, tokenRequestParameters);
+            return await CallAuthApi(Guid.Parse(state),  tokenRequestParameters);
         }
 
-        public async Task<ServiceResponse<AuthToken>> CallAuthApi(Guid id, string realmId, Dictionary<string, string> submissionModel)
+        public async Task<ServiceResponse<AuthToken>> CallAuthApi(Guid id,  Dictionary<string, string> submissionModel)
         {
             var response = new ServiceResponse<AuthToken>() { Data = new AuthToken() };
 
-            var url = _hmrcSettings.TokenUrl;
+            var url = _hmrcSettings.BaseUrl + _hmrcSettings.TokenUrl;
 
             var requestContent = new FormUrlEncodedContent(submissionModel);
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, url);

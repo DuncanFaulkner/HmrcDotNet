@@ -10,7 +10,6 @@ namespace HmrcDotNet.Web.Data.Model
     {
         public Guid IndividualId { get; set; }
         public string IndividualName { get; set; }
-
         public string SaUTR { get; set; }
         public string Nino { get; set; }
         public string AuthJsonPayLoad { get; set; }

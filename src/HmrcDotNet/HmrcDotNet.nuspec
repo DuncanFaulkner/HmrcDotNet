@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>HMRCDotNEt</id>
+    <version>0.0.1</version>
+    <title>HMRC DotNet</title>
+    <authors>Mark O'Grady</authors>
+    <owners>Mark O'Grady</owners>
+    <licenseUrl>https://github.com/markogrady/HmrcDotNet/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/markogrady/HmrcDotNet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A C# wrapper for the HMRC API</description>
+    <releaseNotes>First Interage</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>HMRC wrapper .net core</tags>
+  </metadata>
+</package>
