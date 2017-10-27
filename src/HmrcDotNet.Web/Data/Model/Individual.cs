@@ -13,5 +13,8 @@ namespace HmrcDotNet.Web.Data.Model
         public string SaUTR { get; set; }
         public string Nino { get; set; }
         public string AuthJsonPayLoad { get; set; }
+        public string MtdItId { get; set; }
+        public string EmailAddress { get; set; }
+        public string HmrcUserId { get; set; }
     }
 }

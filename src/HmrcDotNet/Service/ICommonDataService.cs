@@ -18,6 +18,7 @@ namespace HmrcDotNet.Service
 {
     public interface ICommonDataService
     {
+        Task<ServiceResponse<T>> CallApiAsync<T,TL>(string query, TL content, HttpRequestType httpRequestType);
         Task<ServiceResponse<T>> CallApiAsync<T>(string query, string content, HttpRequestType httpRequestType);
         Task<ServiceResponse<T>> CallApiAsync<T>(string query, HttpRequestType httpRequestType);
         void SetToken(string token);
@@ -34,6 +35,11 @@ namespace HmrcDotNet.Service
             _hmrcSettings = hmrcSettings.Value;
         }
 
+
+        public async Task<ServiceResponse<T>> CallApiAsync<T, TL>(string query, TL content, HttpRequestType httpRequestType)
+        {
+            return await CallApiAsync<T>(query, JsonConvert.SerializeObject(content), httpRequestType);
+        }
 
         public async Task<ServiceResponse<T>> CallApiAsync<T>(string query, string content, HttpRequestType httpRequestType)
         {
@@ -95,7 +101,7 @@ namespace HmrcDotNet.Service
 
         public void SetToken(string token)
         {
-            //TODO probably change how this is done.
+            //TODO change how this is done incase it is used across different user calls
             _token = token;
         }
 

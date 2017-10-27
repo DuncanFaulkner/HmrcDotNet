@@ -22,6 +22,7 @@
                 }
                 else
                 {
+                    <td><a href="@Url.Action("CreateIndividual", "Individual")">Create Individual</a></td>
                     <td><a href="@Url.Action("GetBenefits", "Individual", new {id = @individual.IndividualId ,utr = @individual.SaUTR, taxYear = "2017-18"})">GetBenefit</a></td>
                 }
             </tr>

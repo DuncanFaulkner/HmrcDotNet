@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HmrcDotNet.Helpers;
 using HmrcDotNet.Model;
+using HmrcDotNet.Model.Individual;
 
 namespace HmrcDotNet.Service
 {
@@ -21,6 +22,7 @@ namespace HmrcDotNet.Service
         Task<ServiceResponse<NationalInsurance>> GetNationalInsuranceAsync(string utr, string taxYear);
         Task<ServiceResponse<ReliefAtSource>> GetReliefAtSourceAsync(string customeruuid);
         void SetToken(string token);
+        Task<ServiceResponse<CreateTestUserResponse>> CreateTestUserAsync();
     }
 
     public class IndividualDataService : IIndividualDataService
@@ -158,6 +160,23 @@ namespace HmrcDotNet.Service
         {
             _token = token;
             _commonDataService.SetToken(token);
+        }
+
+        
+
+        public async Task<ServiceResponse<CreateTestUserResponse>> CreateTestUserAsync()
+        {
+            var response = new ServiceResponse<CreateTestUserResponse>(){Data = new CreateTestUserResponse()};
+
+            var testUserRequest = new CreateTestUserRequest();
+            testUserRequest.serviceNames.Add("national-insurance");
+            testUserRequest.serviceNames.Add("self-assessment");
+            testUserRequest.serviceNames.Add("mtd-income-tax");
+
+
+            response = await _commonDataService.CallApiAsync<CreateTestUserResponse,CreateTestUserRequest>($"/create-test-user/individuals",testUserRequest , HttpRequestType.Post);
+            
+            return response;
         }
 
         private static void ValidateUtRandTaxYear(string utr, string taxYear, ServiceResponse response)
