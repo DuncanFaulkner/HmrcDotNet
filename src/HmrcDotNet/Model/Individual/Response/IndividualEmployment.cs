@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace HmrcDotNet.Model
+namespace HmrcDotNet.Model.Individual.Response
 {
     //https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individual-employment/1.0
     public class IndividualEmployments

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HmrcDotNet.Helpers;
-using HmrcDotNet.Model;
-using HmrcDotNet.Model.Individual;
 using HmrcDotNet.Model.Individual.Request;
+using HmrcDotNet.Model.Individual.Response;
 
 namespace HmrcDotNet.Service
 {
@@ -35,7 +30,7 @@ namespace HmrcDotNet.Service
 
     public class IndividualDataService : IIndividualDataService
     {
-        private ICommonDataService _commonDataService;
+        private readonly ICommonDataService _commonDataService;
         private string _token;
         public IndividualDataService(ICommonDataService commonDataService)
         {
@@ -55,7 +50,6 @@ namespace HmrcDotNet.Service
         }
         public async Task<ServiceResponse<IndividualEmployments>> GetIndividualEmploymentsAsync(string utr, string taxYear)
         {
-            var test = _token;
             var response = new ServiceResponse<IndividualEmployments>(){ Data = new IndividualEmployments()}; 
             ValidateUtRandTaxYear(utr, taxYear, response);
             if (!response.IsValid)

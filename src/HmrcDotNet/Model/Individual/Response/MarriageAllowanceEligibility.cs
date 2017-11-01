@@ -1,4 +1,4 @@
-﻿namespace HmrcDotNet.Model
+﻿namespace HmrcDotNet.Model.Individual.Response
 {
     public class MarriageAllowanceEligibility
     {
