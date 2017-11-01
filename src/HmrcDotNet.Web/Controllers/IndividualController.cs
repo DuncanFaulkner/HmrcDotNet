@@ -37,7 +37,6 @@ namespace HmrcDotNet.Web.Controllers
             var authUser = await _applicationDbContext.Individuals.FirstOrDefaultAsync(o => o.AuthJsonPayLoad != null);
             var authToken = JsonConvert.DeserializeObject<AuthToken>(authUser.AuthJsonPayLoad);
             _individualDataService.SetToken(authToken.AccessToken);
-            
             var response =  await _individualDataService.CreateTestUserAsync();
             if (response.IsValid)
             {
@@ -51,7 +50,16 @@ namespace HmrcDotNet.Web.Controllers
                 individual.EmailAddress = response.Data.emailAddress;
                 _applicationDbContext.Individuals.Add(individual);
                 await _applicationDbContext.SaveChangesAsync();
+                var createBenefitsResponse = await _individualDataService.CreateBenefits(response.Data.saUtr, "2017-18");
+                var createEmploymentResponse = await _individualDataService.CreateEmployments(response.Data.saUtr, "2017-18");
+                var createIncomeResponse = await _individualDataService.CreateIncome(response.Data.saUtr, "2017-18");
+                var createTaxResponse = await _individualDataService.CreateTax(response.Data.saUtr, "2017-18");
+                var createMarriageStatusResponse = await _individualDataService.CreateMarriageStatus(response.Data.saUtr, "2017-18");
+                var createMarriageEligibilityResponse = await _individualDataService.CreateMarriageEligibility(response.Data.nino, "2017-18");
+                var createNationalInsurance = await _individualDataService.CreateNationalInsurance(response.Data.saUtr, "2017-18");
+            
             }
+
 
             return RedirectToAction("Index");
         }

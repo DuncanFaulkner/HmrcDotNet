@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using HmrcDotNet.Helpers;
 using HmrcDotNet.Model;
 using HmrcDotNet.Model.Individual;
+using HmrcDotNet.Model.Individual.Request;
 
 namespace HmrcDotNet.Service
 {
@@ -23,6 +24,13 @@ namespace HmrcDotNet.Service
         Task<ServiceResponse<ReliefAtSource>> GetReliefAtSourceAsync(string customeruuid);
         void SetToken(string token);
         Task<ServiceResponse<CreateTestUserResponse>> CreateTestUserAsync();
+        Task<ServiceResponse<IndividualBenefits>> CreateBenefits(string utr, string taxYear);
+        Task<ServiceResponse<IndividualEmployments>> CreateEmployments(string utr, string taxYear);
+        Task<ServiceResponse<IndividualIncome>> CreateIncome(string utr, string taxYear);
+        Task<ServiceResponse<IndividualTax>> CreateTax(string utr, string taxYear);
+        Task<ServiceResponse<MarriageAllowanceStatus>> CreateMarriageStatus(string utr, string taxYear);
+        Task<ServiceResponse<MarriageAllowanceEligibility>> CreateMarriageEligibility(string nino, string taxYear);
+        Task<ServiceResponse<NationalInsurance>> CreateNationalInsurance(string utr, string taxYear);
     }
 
     public class IndividualDataService : IIndividualDataService
@@ -178,6 +186,71 @@ namespace HmrcDotNet.Service
             
             return response;
         }
+
+        public async Task<ServiceResponse<IndividualBenefits>> CreateBenefits(string utr, string taxYear)
+        {
+            var response = new ServiceResponse<IndividualBenefits>(){ Data = new IndividualBenefits()};
+            var createIndividualRequest = new CreateIndividualRequest();
+            createIndividualRequest.scenario = "HAPPY_PATH_1";
+            response = await _commonDataService.CallApiAsync<IndividualBenefits, CreateIndividualRequest>($"/individual-paye-test-support/sa/{utr}/benefits/annual-summary/{taxYear}", createIndividualRequest, HttpRequestType.Post);
+            return response;
+        }
+
+        public async Task<ServiceResponse<IndividualEmployments>> CreateEmployments(string utr, string taxYear)
+        {
+            var response = new ServiceResponse<IndividualEmployments>() { Data = new IndividualEmployments() };
+            var createIndividualRequest = new CreateIndividualRequest();
+            createIndividualRequest.scenario = "HAPPY_PATH_1";
+            response = await _commonDataService.CallApiAsync<IndividualEmployments, CreateIndividualRequest>($"/individual-paye-test-support/sa/{utr}/employments/annual-summary/{taxYear}", createIndividualRequest, HttpRequestType.Post);
+            return response;
+        }
+
+        public async Task<ServiceResponse<IndividualIncome>> CreateIncome(string utr, string taxYear)
+        {
+            var response = new ServiceResponse<IndividualIncome>() { Data = new IndividualIncome() };
+            var createIndividualRequest = new CreateIndividualRequest();
+            createIndividualRequest.scenario = "HAPPY_PATH_1";
+            response = await _commonDataService.CallApiAsync<IndividualIncome, CreateIndividualRequest>($"/individual-paye-test-support/sa/{utr}/income/annual-summary/{taxYear}", createIndividualRequest, HttpRequestType.Post);
+            return response;
+        }
+
+        public async Task<ServiceResponse<IndividualTax>> CreateTax(string utr, string taxYear)
+        {
+            var response = new ServiceResponse<IndividualTax>() { Data = new IndividualTax() };
+            var createIndividualRequest = new CreateIndividualRequest();
+            createIndividualRequest.scenario = "HAPPY_PATH_1";
+            response = await _commonDataService.CallApiAsync<IndividualTax, CreateIndividualRequest>($"/individual-paye-test-support/sa/{utr}/tax/annual-summary/{taxYear}", createIndividualRequest, HttpRequestType.Post);
+            return response;
+        }
+
+        public async Task<ServiceResponse<MarriageAllowanceStatus>> CreateMarriageStatus(string utr, string taxYear)
+        {
+            var response = new ServiceResponse<MarriageAllowanceStatus>() { Data = new MarriageAllowanceStatus() };
+            var marriageAllowanceStatus = new MarriageAllowanceStatus();
+            marriageAllowanceStatus.Status = "Recipient";
+            marriageAllowanceStatus.Deceased = false;
+            response = await _commonDataService.CallApiAsync<MarriageAllowanceStatus, MarriageAllowanceStatus>($"/marriage-allowance-test-support/sa/{utr}/status/{taxYear}", marriageAllowanceStatus, HttpRequestType.Post);
+            return response;
+        }
+
+        public async Task<ServiceResponse<MarriageAllowanceEligibility>> CreateMarriageEligibility(string nino, string taxYear)
+        {
+            var response = new ServiceResponse<MarriageAllowanceEligibility>() { Data = new MarriageAllowanceEligibility() };
+            var allowanceEligibility = new MarriageAllowanceEligibility();
+            allowanceEligibility.Eligible = true;
+            response = await _commonDataService.CallApiAsync<MarriageAllowanceEligibility, MarriageAllowanceEligibility>($"/marriage-allowance-test-support/nino/{nino}/eligibility/{taxYear}", allowanceEligibility, HttpRequestType.Post);
+            return response;
+        }
+
+        public async Task<ServiceResponse<NationalInsurance>> CreateNationalInsurance(string utr, string taxYear)
+        {
+            var response = new ServiceResponse<NationalInsurance>() { Data = new NationalInsurance() };
+            var createNi = new CreateIndividualRequest();
+            createNi.scenario = "HAPPY_PATH_1";
+            response = await _commonDataService.CallApiAsync<NationalInsurance, CreateIndividualRequest>($"/national-insurance-test-support/sa/{utr}/annual-summary/{taxYear}", createNi, HttpRequestType.Post);
+            return response;
+        }
+
 
         private static void ValidateUtRandTaxYear(string utr, string taxYear, ServiceResponse response)
         {
