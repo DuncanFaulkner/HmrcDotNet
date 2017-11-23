@@ -32,7 +32,8 @@ When using the latest version of aspnet I recommend you using Manage Secrets to 
 
 You can obtain the keys when creating an app via the [HMRC TEST API website](https://developer.service.hmrc.gov.uk/developer/applications)
 
-##Example
+## Example
+
 The following example we will receive an individual benefits objects
 
 Once you have your access token you can pass it into a service using the settoken method and then call the relevant method
