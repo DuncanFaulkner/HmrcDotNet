@@ -40,5 +40,5 @@ Once you have your access token you can pass it into a service using the settoke
 ```csharp
 var individualDataService = new IndividualDataService();
 individualDataService.SetToken(authToken.AccessToken);
-var individualBenefits = await _individualDataService.GetBenefitsAsync("2234567890", "2017-18");
+var individualBenefits = await individualDataService.GetBenefitsAsync("2234567890", "2017-18");
 ```
