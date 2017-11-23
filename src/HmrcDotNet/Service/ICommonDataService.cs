@@ -18,30 +18,29 @@ namespace HmrcDotNet.Service
 {
     public interface ICommonDataService
     {
-        Task<ServiceResponse<T>> CallApiAsync<T,TL>(string query, TL content, HttpRequestType httpRequestType);
-        Task<ServiceResponse<T>> CallApiAsync<T>(string query, string content, HttpRequestType httpRequestType);
-        Task<ServiceResponse<T>> CallApiAsync<T>(string query, HttpRequestType httpRequestType);
-        void SetToken(string token);
+        Task<ServiceResponse<T>> CallApiAsync<T,TL>(string query,string token, TL content, HttpRequestType httpRequestType);
+        Task<ServiceResponse<T>> CallApiAsync<T>(string query, string token, string content, HttpRequestType httpRequestType);
+        Task<ServiceResponse<T>> CallApiAsync<T>(string query, string token, HttpRequestType httpRequestType);
         Task<ServiceResponse<AuthToken>> ExchangeToken(string state, string code);
-        Task<ServiceResponse<UserInfo>> UserInfo();
+       
     }
 
     public class CommonDataService : ICommonDataService
     {
         private HmrcSettings _hmrcSettings;
-        private string _token { get; set; }
+     
         public CommonDataService(IOptions<HmrcSettings> hmrcSettings)
         {
             _hmrcSettings = hmrcSettings.Value;
         }
 
 
-        public async Task<ServiceResponse<T>> CallApiAsync<T, TL>(string query, TL content, HttpRequestType httpRequestType)
+        public async Task<ServiceResponse<T>> CallApiAsync<T, TL>(string query, string token, TL content, HttpRequestType httpRequestType)
         {
-            return await CallApiAsync<T>(query, JsonConvert.SerializeObject(content), httpRequestType);
+            return await CallApiAsync<T>(query,token, JsonConvert.SerializeObject(content), httpRequestType);
         }
 
-        public async Task<ServiceResponse<T>> CallApiAsync<T>(string query, string content, HttpRequestType httpRequestType)
+        public async Task<ServiceResponse<T>> CallApiAsync<T>(string query,string token, string content, HttpRequestType httpRequestType)
         {
             var response = new ServiceResponse<T>();
             //TODO GET TOKEN
@@ -53,7 +52,7 @@ namespace HmrcDotNet.Service
             {
                 Accept = accept,
             });
-            client.WithOAuthBearerToken(_token);
+            client.WithOAuthBearerToken(token);
             try
             {
                 if (httpRequestType == HttpRequestType.Get)
@@ -94,15 +93,9 @@ namespace HmrcDotNet.Service
 
         }
 
-        public async Task<ServiceResponse<T>> CallApiAsync<T>(string query, HttpRequestType httpRequestType)
+        public async Task<ServiceResponse<T>> CallApiAsync<T>(string query,string token, HttpRequestType httpRequestType)
         {
-            return await CallApiAsync<T>(query, "", httpRequestType);
-        }
-
-        public void SetToken(string token)
-        {
-            //TODO change how this is done incase it is used across different user calls
-            _token = token;
+            return await CallApiAsync<T>(query, token,"", httpRequestType);
         }
 
         public async Task<ServiceResponse<AuthToken>> ExchangeToken(string state, string code)
@@ -120,12 +113,7 @@ namespace HmrcDotNet.Service
             return await CallAuthApi(Guid.Parse(state),  tokenRequestParameters);
         }
 
-        public async Task<ServiceResponse<UserInfo>> UserInfo()
-        {
-            var response = new ServiceResponse<UserInfo>(){Data = new UserInfo()};
-            response = await CallApiAsync<UserInfo>($"oauth/userinfo", HttpRequestType.Get);
-            return response;
-        }
+      
 
         public async Task<ServiceResponse<AuthToken>> CallAuthApi(Guid id,  Dictionary<string, string> submissionModel)
         {

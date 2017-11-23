@@ -6,7 +6,7 @@ using HmrcDotNet.Model.Individual.Response;
 
 namespace HmrcDotNet.Service
 {
-    public interface IIndividualDataService
+    public interface IIndividualDataService:IBaseService
     {
         Task<ServiceResponse<IndividualBenefits>> GetBenefitsAsync(string utr, string taxYear);
         Task<ServiceResponse<IndividualEmployments>> GetIndividualEmploymentsAsync(string utr, string taxYear);
@@ -17,7 +17,7 @@ namespace HmrcDotNet.Service
         Task<ServiceResponse<MarriageAllowanceStatus>> GetMarriageAllowanceStatusAsync(string utr);
         Task<ServiceResponse<NationalInsurance>> GetNationalInsuranceAsync(string utr, string taxYear);
         Task<ServiceResponse<ReliefAtSource>> GetReliefAtSourceAsync(string customeruuid);
-        void SetToken(string token);
+        
         Task<ServiceResponse<CreateTestUserResponse>> CreateTestUserAsync();
         Task<ServiceResponse<IndividualBenefits>> CreateBenefits(string utr, string taxYear);
         Task<ServiceResponse<IndividualEmployments>> CreateEmployments(string utr, string taxYear);
@@ -44,7 +44,7 @@ namespace HmrcDotNet.Service
             ValidateUtRandTaxYear(utr, taxYear, response);
             if (response.IsValid)
             {
-                response = await _commonDataService.CallApiAsync<IndividualBenefits>($"/individual-benefits/sa/{utr}/annual-summary/{taxYear}",  HttpRequestType.Get);
+                response = await _commonDataService.CallApiAsync<IndividualBenefits>($"/individual-benefits/sa/{utr}/annual-summary/{taxYear}", _token, HttpRequestType.Get);
             }
             return response;
         }
@@ -54,7 +54,7 @@ namespace HmrcDotNet.Service
             ValidateUtRandTaxYear(utr, taxYear, response);
             if (!response.IsValid)
             {
-                response = await _commonDataService.CallApiAsync<IndividualEmployments>($"/individual-employment/sa/{utr}/annual-summary/{taxYear}", HttpRequestType.Get);
+                response = await _commonDataService.CallApiAsync<IndividualEmployments>($"/individual-employment/sa/{utr}/annual-summary/{taxYear}",_token, HttpRequestType.Get);
             }
 
             return response;
@@ -66,7 +66,7 @@ namespace HmrcDotNet.Service
             ValidateUtRandTaxYear(utr, taxYear, response);
             if (!response.IsValid)
             {
-                response = await _commonDataService.CallApiAsync<IndividualIncome>($"/individual-income/sa/{utr}/annual-summary/{taxYear}", HttpRequestType.Get);
+                response = await _commonDataService.CallApiAsync<IndividualIncome>($"/individual-income/sa/{utr}/annual-summary/{taxYear}", _token, HttpRequestType.Get);
             }
 
             return response;
@@ -78,7 +78,7 @@ namespace HmrcDotNet.Service
             ValidateUtRandTaxYear(utr, taxYear, response);
             if (!response.IsValid)
             {
-                response = await _commonDataService.CallApiAsync<IndividualTax>($"/individual-tax/sa/{utr}/annual-summary/{taxYear}", HttpRequestType.Get);
+                response = await _commonDataService.CallApiAsync<IndividualTax>($"/individual-tax/sa/{utr}/annual-summary/{taxYear}", _token, HttpRequestType.Get);
 
             }
 
@@ -94,7 +94,7 @@ namespace HmrcDotNet.Service
             }
             if (!response.IsValid)
             {
-                response = await _commonDataService.CallApiAsync<LifetimeIsa>($"/lifetime-isa/manager/{lisaManagerReferenceNumber}", HttpRequestType.Get);
+                response = await _commonDataService.CallApiAsync<LifetimeIsa>($"/lifetime-isa/manager/{lisaManagerReferenceNumber}", _token, HttpRequestType.Get);
             }
 
             return response;
@@ -109,7 +109,7 @@ namespace HmrcDotNet.Service
             }
             if (!response.IsValid)
             {
-                response = await _commonDataService.CallApiAsync<MarriageAllowanceEligibility>($"/marriage-allowance/sa/{utr}/status", HttpRequestType.Get);
+                response = await _commonDataService.CallApiAsync<MarriageAllowanceEligibility>($"/marriage-allowance/sa/{utr}/status", _token, HttpRequestType.Get);
 
             }
 
@@ -125,7 +125,7 @@ namespace HmrcDotNet.Service
             }
             if (!response.IsValid)
             {
-                response = await _commonDataService.CallApiAsync<MarriageAllowanceStatus>($"/marriage-allowance/sa/{utr}/eligibility", HttpRequestType.Get);
+                response = await _commonDataService.CallApiAsync<MarriageAllowanceStatus>($"/marriage-allowance/sa/{utr}/eligibility", _token, HttpRequestType.Get);
 
             }
 
@@ -135,10 +135,10 @@ namespace HmrcDotNet.Service
         public async Task<ServiceResponse<NationalInsurance>> GetNationalInsuranceAsync(string utr, string taxYear)
         {
             var response = new ServiceResponse<NationalInsurance>() { Data = new NationalInsurance() };
-            ValidateUtRandTaxYear(utr, taxYear, response);
+            Validator.ValidateUtRandTaxYear(utr, taxYear, response);
             if (!response.IsValid)
             {
-                response = await _commonDataService.CallApiAsync<NationalInsurance>($"/national-insurance/sa/{utr}/annual-summary/{taxYear}", HttpRequestType.Get);
+                response = await _commonDataService.CallApiAsync<NationalInsurance>($"/national-insurance/sa/{utr}/annual-summary/{taxYear}", _token, HttpRequestType.Get);
             }
 
             return response;
@@ -153,7 +153,7 @@ namespace HmrcDotNet.Service
             }
             if (!response.IsValid)
             {
-                response = await _commonDataService.CallApiAsync<ReliefAtSource>($"/relief-at-source/customer/{customeruuid}/residency-status", HttpRequestType.Get);
+                response = await _commonDataService.CallApiAsync<ReliefAtSource>($"/relief-at-source/customer/{customeruuid}/residency-status", _token, HttpRequestType.Get);
             }
             return response;
         }
@@ -161,7 +161,6 @@ namespace HmrcDotNet.Service
         public void SetToken(string token)
         {
             _token = token;
-            _commonDataService.SetToken(token);
         }
 
         
@@ -176,7 +175,7 @@ namespace HmrcDotNet.Service
             testUserRequest.serviceNames.Add("mtd-income-tax");
 
 
-            response = await _commonDataService.CallApiAsync<CreateTestUserResponse,CreateTestUserRequest>($"/create-test-user/individuals",testUserRequest , HttpRequestType.Post);
+            response = await _commonDataService.CallApiAsync<CreateTestUserResponse,CreateTestUserRequest>($"/create-test-user/individuals", _token, testUserRequest , HttpRequestType.Post);
             
             return response;
         }
@@ -186,7 +185,7 @@ namespace HmrcDotNet.Service
             var response = new ServiceResponse<IndividualBenefits>(){ Data = new IndividualBenefits()};
             var createIndividualRequest = new CreateIndividualRequest();
             createIndividualRequest.scenario = "HAPPY_PATH_1";
-            response = await _commonDataService.CallApiAsync<IndividualBenefits, CreateIndividualRequest>($"/individual-paye-test-support/sa/{utr}/benefits/annual-summary/{taxYear}", createIndividualRequest, HttpRequestType.Post);
+            response = await _commonDataService.CallApiAsync<IndividualBenefits, CreateIndividualRequest>($"/individual-paye-test-support/sa/{utr}/benefits/annual-summary/{taxYear}", _token, createIndividualRequest, HttpRequestType.Post);
             return response;
         }
 
@@ -195,7 +194,7 @@ namespace HmrcDotNet.Service
             var response = new ServiceResponse<IndividualEmployments>() { Data = new IndividualEmployments() };
             var createIndividualRequest = new CreateIndividualRequest();
             createIndividualRequest.scenario = "HAPPY_PATH_1";
-            response = await _commonDataService.CallApiAsync<IndividualEmployments, CreateIndividualRequest>($"/individual-paye-test-support/sa/{utr}/employments/annual-summary/{taxYear}", createIndividualRequest, HttpRequestType.Post);
+            response = await _commonDataService.CallApiAsync<IndividualEmployments, CreateIndividualRequest>($"/individual-paye-test-support/sa/{utr}/employments/annual-summary/{taxYear}", _token, createIndividualRequest, HttpRequestType.Post);
             return response;
         }
 
@@ -204,7 +203,7 @@ namespace HmrcDotNet.Service
             var response = new ServiceResponse<IndividualIncome>() { Data = new IndividualIncome() };
             var createIndividualRequest = new CreateIndividualRequest();
             createIndividualRequest.scenario = "HAPPY_PATH_1";
-            response = await _commonDataService.CallApiAsync<IndividualIncome, CreateIndividualRequest>($"/individual-paye-test-support/sa/{utr}/income/annual-summary/{taxYear}", createIndividualRequest, HttpRequestType.Post);
+            response = await _commonDataService.CallApiAsync<IndividualIncome, CreateIndividualRequest>($"/individual-paye-test-support/sa/{utr}/income/annual-summary/{taxYear}", _token, createIndividualRequest, HttpRequestType.Post);
             return response;
         }
 
@@ -213,7 +212,7 @@ namespace HmrcDotNet.Service
             var response = new ServiceResponse<IndividualTax>() { Data = new IndividualTax() };
             var createIndividualRequest = new CreateIndividualRequest();
             createIndividualRequest.scenario = "HAPPY_PATH_1";
-            response = await _commonDataService.CallApiAsync<IndividualTax, CreateIndividualRequest>($"/individual-paye-test-support/sa/{utr}/tax/annual-summary/{taxYear}", createIndividualRequest, HttpRequestType.Post);
+            response = await _commonDataService.CallApiAsync<IndividualTax, CreateIndividualRequest>($"/individual-paye-test-support/sa/{utr}/tax/annual-summary/{taxYear}", _token, createIndividualRequest, HttpRequestType.Post);
             return response;
         }
 
@@ -223,7 +222,7 @@ namespace HmrcDotNet.Service
             var marriageAllowanceStatus = new MarriageAllowanceStatus();
             marriageAllowanceStatus.Status = "Recipient";
             marriageAllowanceStatus.Deceased = false;
-            response = await _commonDataService.CallApiAsync<MarriageAllowanceStatus, MarriageAllowanceStatus>($"/marriage-allowance-test-support/sa/{utr}/status/{taxYear}", marriageAllowanceStatus, HttpRequestType.Post);
+            response = await _commonDataService.CallApiAsync<MarriageAllowanceStatus, MarriageAllowanceStatus>($"/marriage-allowance-test-support/sa/{utr}/status/{taxYear}", _token, marriageAllowanceStatus, HttpRequestType.Post);
             return response;
         }
 
@@ -232,7 +231,7 @@ namespace HmrcDotNet.Service
             var response = new ServiceResponse<MarriageAllowanceEligibility>() { Data = new MarriageAllowanceEligibility() };
             var allowanceEligibility = new MarriageAllowanceEligibility();
             allowanceEligibility.Eligible = true;
-            response = await _commonDataService.CallApiAsync<MarriageAllowanceEligibility, MarriageAllowanceEligibility>($"/marriage-allowance-test-support/nino/{nino}/eligibility/{taxYear}", allowanceEligibility, HttpRequestType.Post);
+            response = await _commonDataService.CallApiAsync<MarriageAllowanceEligibility, MarriageAllowanceEligibility>($"/marriage-allowance-test-support/nino/{nino}/eligibility/{taxYear}", _token, allowanceEligibility, HttpRequestType.Post);
             return response;
         }
 
@@ -241,21 +240,11 @@ namespace HmrcDotNet.Service
             var response = new ServiceResponse<NationalInsurance>() { Data = new NationalInsurance() };
             var createNi = new CreateIndividualRequest();
             createNi.scenario = "HAPPY_PATH_1";
-            response = await _commonDataService.CallApiAsync<NationalInsurance, CreateIndividualRequest>($"/national-insurance-test-support/sa/{utr}/annual-summary/{taxYear}", createNi, HttpRequestType.Post);
+            response = await _commonDataService.CallApiAsync<NationalInsurance, CreateIndividualRequest>($"/national-insurance-test-support/sa/{utr}/annual-summary/{taxYear}", _token, createNi, HttpRequestType.Post);
             return response;
         }
 
 
-        private static void ValidateUtRandTaxYear(string utr, string taxYear, ServiceResponse response)
-        {
-            if (!Regex.Match(utr, @"^\d{10}$", RegexOptions.IgnoreCase).Success)
-            {
-                response.AddError("UTR", "The UTR needs to be 10 characters");
-            }
-            if (!Regex.Match(taxYear, @"^[0-9]{4}-[0-1][0-9]$", RegexOptions.IgnoreCase).Success)
-            {
-                response.AddError("Year", "The Year is in the wrong format");
-            }
-        }
+        
     }
 }

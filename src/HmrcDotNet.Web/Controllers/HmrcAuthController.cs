@@ -45,7 +45,7 @@ namespace HmrcDotNet.Web.Controllers
                 individual.AuthJsonPayLoad = JsonConvert.SerializeObject(response.Data);
                 await _applicationDbContext.SaveChangesAsync();
                 _commonDataService.SetToken(response.Data.AccessToken);
-                await _commonDataService.UserInfo();
+               // await _commonDataService.UserInfo();
             }
 
 
