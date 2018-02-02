@@ -30,9 +30,9 @@ namespace HmrcDotNet.Service
 
     public class IndividualDataService : IIndividualDataService
     {
-        private readonly ICommonDataService _commonDataService;
+        private readonly IHmrcCommonDataService _commonDataService;
         private string _token;
-        public IndividualDataService(ICommonDataService commonDataService)
+        public IndividualDataService(IHmrcCommonDataService commonDataService)
         {
             _commonDataService = commonDataService;
         }
@@ -40,8 +40,8 @@ namespace HmrcDotNet.Service
         public async Task<ServiceResponse<IndividualBenefits>> GetBenefitsAsync(string utr, string taxYear)
         {
             var response = new ServiceResponse<IndividualBenefits>(){Data = new IndividualBenefits()};
-           
-            ValidateUtRandTaxYear(utr, taxYear, response);
+
+            HmrcDotNet.Helpers.Validator.ValidateUtRandTaxYear(utr, taxYear, response);
             if (response.IsValid)
             {
                 response = await _commonDataService.CallApiAsync<IndividualBenefits>($"/individual-benefits/sa/{utr}/annual-summary/{taxYear}", _token, HttpRequestType.Get);
@@ -50,8 +50,8 @@ namespace HmrcDotNet.Service
         }
         public async Task<ServiceResponse<IndividualEmployments>> GetIndividualEmploymentsAsync(string utr, string taxYear)
         {
-            var response = new ServiceResponse<IndividualEmployments>(){ Data = new IndividualEmployments()}; 
-            ValidateUtRandTaxYear(utr, taxYear, response);
+            var response = new ServiceResponse<IndividualEmployments>(){ Data = new IndividualEmployments()};
+            HmrcDotNet.Helpers.Validator.ValidateUtRandTaxYear(utr, taxYear, response);
             if (!response.IsValid)
             {
                 response = await _commonDataService.CallApiAsync<IndividualEmployments>($"/individual-employment/sa/{utr}/annual-summary/{taxYear}",_token, HttpRequestType.Get);
@@ -63,7 +63,7 @@ namespace HmrcDotNet.Service
         public async Task<ServiceResponse<IndividualIncome>> GetIndividualIncomeAsync(string utr, string taxYear)
         {
             var response = new ServiceResponse<IndividualIncome>() { Data = new IndividualIncome() };
-            ValidateUtRandTaxYear(utr, taxYear, response);
+            HmrcDotNet.Helpers.Validator.ValidateUtRandTaxYear(utr, taxYear, response);
             if (!response.IsValid)
             {
                 response = await _commonDataService.CallApiAsync<IndividualIncome>($"/individual-income/sa/{utr}/annual-summary/{taxYear}", _token, HttpRequestType.Get);
@@ -75,7 +75,7 @@ namespace HmrcDotNet.Service
         public async Task<ServiceResponse<IndividualTax>> GetIndividualTaxAsync(string utr, string taxYear)
         {
             var response = new ServiceResponse<IndividualTax>() { Data = new IndividualTax() };
-            ValidateUtRandTaxYear(utr, taxYear, response);
+            HmrcDotNet.Helpers.Validator.ValidateUtRandTaxYear(utr, taxYear, response);
             if (!response.IsValid)
             {
                 response = await _commonDataService.CallApiAsync<IndividualTax>($"/individual-tax/sa/{utr}/annual-summary/{taxYear}", _token, HttpRequestType.Get);

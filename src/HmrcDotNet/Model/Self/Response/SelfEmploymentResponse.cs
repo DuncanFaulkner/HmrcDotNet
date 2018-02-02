@@ -13,6 +13,7 @@ namespace HmrcDotNet.Model.Self.Response
             accountingPeriod = new Accountingperiod();
         }
 
+        public string id { get; set; }
         public Accountingperiod accountingPeriod { get; set; }
         public string accountingType { get; set; }
         public string commencementDate { get; set; }

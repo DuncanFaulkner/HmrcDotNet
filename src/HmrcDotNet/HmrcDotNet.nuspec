@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>HMRCDotNEt</id>
+    <id>HMRCDotNet</id>
     <version>0.0.1</version>
     <title>HMRC DotNet</title>
     <authors>Mark O'Grady</authors>

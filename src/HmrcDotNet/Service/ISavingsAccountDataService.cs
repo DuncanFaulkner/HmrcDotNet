@@ -13,10 +13,10 @@ namespace HmrcDotNet.Service
 
     public class SavingsAccountData : IDividendDataService
     {
-        private readonly ICommonDataService _commonDataService;
+        private readonly IHmrcCommonDataService _commonDataService;
         private string _token;
 
-        public SavingsAccountData(ICommonDataService commonDataService)
+        public SavingsAccountData(IHmrcCommonDataService commonDataService)
         {
             _commonDataService = commonDataService;
         }

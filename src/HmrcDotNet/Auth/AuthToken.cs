@@ -8,7 +8,7 @@ namespace HmrcDotNet.Auth
 {
     public class AuthToken
     {
-        public Guid IndividualId { get; set; }
+        public string EntityId { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
         public DateTime TokenExpiration { get; set; }

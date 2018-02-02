@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,10 +39,17 @@ namespace HmrcDotNet.Helpers
         {
             return _errorMessages.Values.Contains(error, StringComparer.OrdinalIgnoreCase);
         }
+
+        public Dictionary<string, string> Errors
+        {
+            get { return _errorMessages; }
+
+        }
     }
 
     public class ServiceResponse<T> : ServiceResponse
     {
         public T Data { get; set; }
+        public string Location { get; set; }
     }
 }

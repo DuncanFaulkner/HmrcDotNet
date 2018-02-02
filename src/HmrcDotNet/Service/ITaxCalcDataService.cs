@@ -16,10 +16,10 @@ namespace HmrcDotNet.Service
 
     public class TaxCalcDataService : ITaxCalcDataService
     {
-        private readonly ICommonDataService _commonDataService;
+        private readonly IHmrcCommonDataService _commonDataService;
         private string _token;
 
-        public TaxCalcDataService(ICommonDataService commonDataService)
+        public TaxCalcDataService(IHmrcCommonDataService commonDataService)
         {
             _commonDataService = commonDataService;
         }
