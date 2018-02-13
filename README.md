@@ -11,7 +11,7 @@ https://developer.service.hmrc.gov.uk/api-documentation
 HmrcDotNet once tested will be available by nuget:
 
 ```powershell
-PM> Install-Package ?comingsoon?
+PM> Install-Package HmrcDotNet
 ```
 
 Once we have the package installed, we can then create a `HmrcSettings` in your appsettings.json file.
@@ -39,6 +39,5 @@ The following example we will receive an individual benefits objects
 Once you have your access token you can pass it into a service using the settoken method and then call the relevant method
 ```csharp
 var individualDataService = new IndividualDataService();
-individualDataService.SetToken(authToken.AccessToken);
-var individualBenefits = await individualDataService.GetBenefitsAsync("2234567890", "2017-18");
+var individualBenefits = await individualDataService.GetBenefitsAsync(authToken.AccessToken,"2234567890", "2017-18");
 ```
