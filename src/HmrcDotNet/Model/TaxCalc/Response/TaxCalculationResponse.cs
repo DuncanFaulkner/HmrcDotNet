@@ -12,6 +12,8 @@ namespace HmrcDotNet.Model.TaxCalc.Response
         {
             eoyEstimate = new Eoyestimate();
         }
+
+        public string taxCalculationId { get; set; }
         public float incomeTaxYTD { get; set; }
         public float incomeTaxThisPeriod { get; set; }
         public float payFromAllEmployments { get; set; }

@@ -87,10 +87,18 @@ namespace HmrcDotNet.Service
                     {
                         var errorResponse = JsonConvert.DeserializeObject<ErrorResponseModel>(ex.Call.ErrorResponseBody);
                         var i = 0;
-                        foreach (var errorResponseError in errorResponse.errors)
+                        if (errorResponse.errors != null)
                         {
-                            response.AddError(errorResponseError.code + i,errorResponseError.message + " - " + errorResponseError.path);
-                            i++;
+                            foreach (var errorResponseError in errorResponse.errors)
+                            {
+                                response.AddError(errorResponseError.code + i,
+                                    errorResponseError.message + " - " + errorResponseError.path);
+                                i++;
+                            }
+                        }
+                        if (!String.IsNullOrEmpty(errorResponse.code))
+                        {
+                            response.AddError(errorResponse.code,errorResponse.message);
                         }
                     }
                    

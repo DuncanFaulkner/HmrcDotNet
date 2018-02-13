@@ -15,7 +15,8 @@ namespace HmrcDotNet.Service
     public interface IVATDataService
     {
         Task<ServiceResponse<VATObligationsResponse>> GetVATObligations(string token ,string vrn, DateTime to, DateTime from, VATStatus vatStatus);
-        Task<ServiceResponse<VATReturnResponse>> SendVATReturn(string token, string vrn, VATReturnRequest model);
+        Task<ServiceResponse<VATReturnResponse>> GetVATReturn(string token ,string vrn, string periodKey);
+        Task<ServiceResponse<SendVATReturnResponse>> SendVATReturn(string token, string vrn, VATReturnRequest model);
 
     }
 
@@ -45,11 +46,30 @@ namespace HmrcDotNet.Service
             return response;
         }
 
-        public async Task<ServiceResponse<VATReturnResponse>> SendVATReturn(string token, string vrn,VATReturnRequest model)
+        public async Task<ServiceResponse<VATReturnResponse>> GetVATReturn(string token, string vrn, string periodKey)
         {
-            var response = new ServiceResponse<VATReturnResponse>(){Data= new VATReturnResponse()};
+            var response = new ServiceResponse<VATReturnResponse>() { Data = new VATReturnResponse() };
 
-            response = await _commonDataService.CallApiAsync<VATReturnResponse, VATReturnRequest>($"vat/{vrn}/return", token, model, HttpRequestType.Post);
+            if (String.IsNullOrEmpty(vrn))
+            {
+                response.AddError("VRN", "Please enter a VAT Registration Number");
+            }
+            if (String.IsNullOrEmpty(periodKey))
+            {
+                response.AddError("PeriodKey", "Please enter a Period Key");
+            }
+            if (response.IsValid)
+            {
+                response = await _commonDataService.CallApiAsync<VATReturnResponse>($"/vat/{vrn}/returns/{periodKey}", token, HttpRequestType.Get);
+            }
+            return response;
+        }
+
+        public async Task<ServiceResponse<SendVATReturnResponse>> SendVATReturn(string token, string vrn,VATReturnRequest model)
+        {
+            var response = new ServiceResponse<SendVATReturnResponse>(){Data= new SendVATReturnResponse()};
+
+            response = await _commonDataService.CallApiAsync<SendVATReturnResponse, VATReturnRequest>($"vat/{vrn}/return", token, model, HttpRequestType.Post);
             
             return response;
         }

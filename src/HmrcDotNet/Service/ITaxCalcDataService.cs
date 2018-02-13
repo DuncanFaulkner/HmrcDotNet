@@ -9,45 +9,38 @@ using HmrcDotNet.Model.TaxCalc.Response;
 
 namespace HmrcDotNet.Service
 {
-    public interface ITaxCalcDataService : IBaseService
-    {
-        Task<ServiceResponse<TaxCalculationResponse>> CalculateTax(string nino, string taxYear);
+    public interface ITaxCalcDataService
+    { 
+        Task<ServiceResponse<TaxCalculationResponse>> CalculateTax(string token, string nino, string taxYear);
     }
 
     public class TaxCalcDataService : ITaxCalcDataService
     {
         private readonly IHmrcCommonDataService _commonDataService;
-        private string _token;
-
+       
         public TaxCalcDataService(IHmrcCommonDataService commonDataService)
         {
             _commonDataService = commonDataService;
         }
 
-        public void SetToken(string token)
-        {
-            _token = token;
-        }
         
-        public async Task<ServiceResponse<TaxCalculationResponse>> CalculateTax(string nino, string taxYear)
+        
+        public async Task<ServiceResponse<TaxCalculationResponse>> CalculateTax(string token, string nino, string taxYear)
         {
             var response = new ServiceResponse<TaxCalculationResponse>(){Data= new TaxCalculationResponse()};
             Validator.ValidateNinoandTaxYear(nino,taxYear,response);
 
             if (!response.IsValid)
             {
-                var calcresponse = await _commonDataService.CallApiAsync<CreateTaxCalcResponse>($"/self-assessment/ni/{nino}/calculations", _token, HttpRequestType.Get);
+                var calcresponse = await _commonDataService.CallApiAsync<CreateTaxCalcResponse>($"/self-assessment/ni/{nino}/calculations", token, HttpRequestType.Get);
                 if (calcresponse.IsValid)
                 {
                     var delay = calcresponse.Data.etaSeconds;
                     //Delay for a few seconds to try again
                     await Task.Delay(delay * 1000);
-                    //TODO either recover the detail from the header but I have logged a case.
-                    //response = _commonDataService.CallApiAsync<CreateTaxCalcResponse>($"/self-assessment/ni/{nino}/calculations/{taxCalculationId}", _token, HttpRequestType.Get);
+                    response = await _commonDataService.CallApiAsync<TaxCalculationResponse>($"{calcresponse.Location}", token, HttpRequestType.Get);
                 }
-
             }
-
             return response;
         }
     }

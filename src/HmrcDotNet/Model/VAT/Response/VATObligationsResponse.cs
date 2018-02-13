@@ -25,4 +25,6 @@ namespace HmrcDotNet.Model.VAT.Response
         public string periodKey { get; set; }
     }
 
+    
+
 }
