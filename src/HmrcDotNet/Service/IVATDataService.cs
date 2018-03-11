@@ -17,6 +17,8 @@ namespace HmrcDotNet.Service
     {
         Task<ServiceResponse<VATObligationsResponse>> GetVATObligations(string token ,string vrn, DateTime to, DateTime from, VATStatus vatStatus);
         Task<ServiceResponse<VATReturnResponse>> GetVATReturn(string token ,string vrn, string periodKey);
+        Task<ServiceResponse<VATLiabilityResponse>> GetVATLiabilities(string token ,string vrn, DateTime from, DateTime to);
+        Task<ServiceResponse<VATPaymentResponse>> GetVATPayments(string token ,string vrn, DateTime from, DateTime to);
         Task<ServiceResponse<SendVATReturnResponse>> SendVATReturn(string token, string vrn, VATReturnRequest model);
 
     }
@@ -61,8 +63,35 @@ namespace HmrcDotNet.Service
             }
             if (response.IsValid)
             {
-                var encodedPeriodKey = HttpUtility.UrlEncode(periodKey);
-                response = await _commonDataService.CallApiAsync<VATReturnResponse>($"vat/{vrn}/returns/{encodedPeriodKey}", token, HttpRequestType.Get);
+                response = await _commonDataService.CallApiAsync<VATReturnResponse>($"vat/{vrn}/returns/{periodKey}", token, HttpRequestType.Get);
+            }
+            return response;
+        }
+
+        public async Task<ServiceResponse<VATLiabilityResponse>> GetVATLiabilities(string token, string vrn, DateTime @from, DateTime to)
+        {
+            var response = new ServiceResponse<VATLiabilityResponse>(){Data =  new VATLiabilityResponse()};
+            if (String.IsNullOrEmpty(vrn))
+            {
+                response.AddError("VRN", "Please enter a VAT Registration Number");
+            }
+            if (response.IsValid)
+            {
+                response = await _commonDataService.CallApiAsync<VATLiabilityResponse>($"vat/{vrn}/liabilities?from={from.ToString("yyyy-MM-dd")}&to={to.ToString("yyyy-MM-dd")}", token, HttpRequestType.Get);
+            }
+            return response;
+        }
+
+        public async Task<ServiceResponse<VATPaymentResponse>> GetVATPayments(string token, string vrn, DateTime @from, DateTime to)
+        {
+            var response = new ServiceResponse<VATPaymentResponse>() { Data = new VATPaymentResponse() };
+            if (String.IsNullOrEmpty(vrn))
+            {
+                response.AddError("VRN", "Please enter a VAT Registration Number");
+            }
+            if (response.IsValid)
+            {
+                response = await _commonDataService.CallApiAsync<VATPaymentResponse>($"vat/{vrn}/payments?from={from.ToString("yyyy-MM-dd")}&to={to.ToString("yyyy-MM-dd")}", token, HttpRequestType.Get);
             }
             return response;
         }
