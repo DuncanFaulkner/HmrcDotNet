@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>HMRCDotNet</id>
-    <version>0.0.1</version>
+    <version>1.0.1</version>
     <title>HMRC DotNet</title>
     <authors>Mark O'Grady</authors>
     <owners>Mark O'Grady</owners>
@@ -13,6 +13,6 @@
     <releaseNotes>First Interage</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>HMRC wrapper .net core</tags>
-    <iconUrl></iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/markogrady/HmrcDotNet/master/src/HmrcDotNet.Web/wwwroot/images/nugeticon.png</iconUrl>
   </metadata>
 </package>

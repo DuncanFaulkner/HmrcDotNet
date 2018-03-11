@@ -66,6 +66,7 @@ namespace HmrcDotNet.Service
                     var objectResponse1 = await client.PostAsync((HttpContent)httpContent);
                     var jString = await objectResponse1.Content.ReadAsStringAsync();
                     response.Data = JsonConvert.DeserializeObject<T>(jString);
+                    if (objectResponse1.Headers.Location != null)
                     response.Location = objectResponse1.Headers.Location.AbsoluteUri;
                 }
             }

@@ -38,7 +38,7 @@ namespace HmrcDotNet.Web
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IIndividualDataService,IndividualDataService>();
-            services.AddTransient<ICommonDataService,CommonDataService>();
+            services.AddTransient<IHmrcCommonDataService,IHmrcCommonDataService>();
             services.Configure<HmrcSettings>(Configuration.GetSection("HmrcSettings"));
             services.AddMvc();
         }

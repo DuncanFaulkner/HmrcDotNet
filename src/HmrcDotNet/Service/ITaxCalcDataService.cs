@@ -22,8 +22,6 @@ namespace HmrcDotNet.Service
         {
             _commonDataService = commonDataService;
         }
-
-        
         
         public async Task<ServiceResponse<TaxCalculationResponse>> CalculateTax(string token, string nino, string taxYear)
         {

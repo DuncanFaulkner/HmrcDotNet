@@ -18,10 +18,10 @@ namespace HmrcDotNet.Web.Controllers
         //TODO I will change this I just want to confirm the best way to use the new oauth stuff in Core 2.0
 
         private HmrcSettings _hmrcSettings;
-        private ICommonDataService _commonDataService;
+        private IHmrcCommonDataService _commonDataService;
         private ApplicationDbContext _applicationDbContext;
 
-        public HmrcAuthController(IOptions<HmrcSettings> hmrcSettings, ICommonDataService commonDataService, ApplicationDbContext applicationDbContext)
+        public HmrcAuthController(IOptions<HmrcSettings> hmrcSettings, IHmrcCommonDataService commonDataService, ApplicationDbContext applicationDbContext)
         {
             _hmrcSettings = hmrcSettings.Value;
             _commonDataService = commonDataService;

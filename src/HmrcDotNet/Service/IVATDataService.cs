@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using HmrcDotNet.Helpers;
 using HmrcDotNet.Model.Generic;
 using HmrcDotNet.Model.VAT;
@@ -60,7 +61,8 @@ namespace HmrcDotNet.Service
             }
             if (response.IsValid)
             {
-                response = await _commonDataService.CallApiAsync<VATReturnResponse>($"/vat/{vrn}/returns/{periodKey}", token, HttpRequestType.Get);
+                var encodedPeriodKey = HttpUtility.UrlEncode(periodKey);
+                response = await _commonDataService.CallApiAsync<VATReturnResponse>($"vat/{vrn}/returns/{encodedPeriodKey}", token, HttpRequestType.Get);
             }
             return response;
         }
@@ -68,8 +70,8 @@ namespace HmrcDotNet.Service
         public async Task<ServiceResponse<SendVATReturnResponse>> SendVATReturn(string token, string vrn,VATReturnRequest model)
         {
             var response = new ServiceResponse<SendVATReturnResponse>(){Data= new SendVATReturnResponse()};
-
-            response = await _commonDataService.CallApiAsync<SendVATReturnResponse, VATReturnRequest>($"vat/{vrn}/return", token, model, HttpRequestType.Post);
+            var encodedPeriodKey = HttpUtility.UrlEncode(model.periodKey);
+            response = await _commonDataService.CallApiAsync<SendVATReturnResponse, VATReturnRequest>($"vat/{vrn}/returns/{model.periodKey}", token, model, HttpRequestType.Post);
             
             return response;
         }

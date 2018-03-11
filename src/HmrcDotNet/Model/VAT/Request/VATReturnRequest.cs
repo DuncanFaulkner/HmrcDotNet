@@ -19,7 +19,7 @@ namespace HmrcDotNet.Model.VAT.Request
         public int totalValuePurchasesExVAT { get; set; }
         public int totalValueGoodsSuppliedExVAT { get; set; }
         public int totalAcquisitionsExVAT { get; set; }
-        public string finalised { get; set; }
+        public bool finalised { get; set; }
     }
 
 }
